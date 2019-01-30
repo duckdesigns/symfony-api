@@ -11,9 +11,6 @@ use App\Valueobject\Header\ContentType;
 class Get extends BaseController
 {
 
-    /**
-     * @Route("/events", name="fetchAll", methods={"GET"})
-     */
     public function fetchAll(): Response
     {
         $response = new Response();
@@ -35,9 +32,6 @@ class Get extends BaseController
         return $response;
     }
 
-    /**
-     * @Route("/events/{id}", name="fetch", methods={"GET"}, requirements={"id"="\d+"})
-     */
     public function fetch(int $id): Response
     {
         $response = new Response();

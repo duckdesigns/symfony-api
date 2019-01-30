@@ -14,9 +14,6 @@ use App\Valueobject\Header\Location;
 class Post extends BaseController
 {
 
-    /**
-     * @Route("/events", name="create", methods={"POST"})
-     */
     public function create(Request $request): Response
     {
         $response = new Response();

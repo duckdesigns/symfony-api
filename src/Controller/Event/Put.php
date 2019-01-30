@@ -12,9 +12,6 @@ use App\Valueobject\Header\ContentType;
 class Put extends BaseController
 {
 
-    /**
-     * @Route("/events/{id}", name="fetch", methods={"PUT"}, requirements={"id"="\d+"})
-     */
     public function update(Request $request, int $id): Response
     {
         $response = new Response();
