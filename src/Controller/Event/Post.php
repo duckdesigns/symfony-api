@@ -8,16 +8,15 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Event;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use App\Valueobject\Header\ContentType;
 use App\Valueobject\Header\Location;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class Post extends BaseController
 {
 
-    public function create(Request $request): Response
+    public function create(Request $request): JsonResponse
     {
-        $response = new Response();
-        $response->headers->add(ContentType::createJson()->toArray());
+        $response = new JsonResponse();
         
         try
         {
@@ -31,8 +30,8 @@ class Post extends BaseController
         }
         catch (\Throwable $t)
         {
+            $this->logger->addError($t->getMessage());
             $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-            $response->setContent(json_encode(['error' => $t->getMessage()]));
         }
         
         return $response;

@@ -6,53 +6,42 @@ namespace App\Controller\Event;
 use App\Controller\Event\BaseController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
-use App\Valueobject\Header\ContentType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class Get extends BaseController
 {
 
-    public function fetchAll(): Response
+    public function fetchAll(): JsonResponse
     {
-        $response = new Response();
-        $response->headers->add(ContentType::createJson()->toArray());
+        $response = new JsonResponse();
         
         try
         {
             $events = $this->repository->findAll();
-            
-            $response->setContent(json_encode($events));
-            $response->setStatusCode(Response::HTTP_OK);
+            $response->setData($events);
         }
         catch (\Throwable $t)
         {
-            $response->setContent(json_encode(['error' => $t->getMessage()]));
+            $this->logger->addError($t->getMessage());
+            $response->setData(['error' => $t->getMessage()]);
             $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         
         return $response;
     }
 
-    public function fetch(int $id): Response
+    public function fetch(int $id): JsonResponse
     {
-        $response = new Response();
-        $response->headers->add(ContentType::createJson()->toArray());
+        $response = new JsonResponse();
         
         try
         {
             $event = $this->repository->find($id);
-            if ($event !== null)
-            {
-                $response->setContent(json_encode($event));
-                $response->setStatusCode(Response::HTTP_OK);
-            }
-            else
-            {
-                $response->setStatusCode(Response::HTTP_NOT_FOUND);
-            }
+            ($event !== null) ? $response->setData($event) : $response->setStatusCode(Response::HTTP_NOT_FOUND);
         }
         catch (\Throwable $t)
         {
-            $response->setContent(json_encode(['error' => $t->getMessage()]));
+            $this->logger->addError($t->getMessage());
             $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         
