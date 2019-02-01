@@ -2,9 +2,10 @@ monolog:
     handlers:
         main:
             type: fingers_crossed
-            action_level: error
+            action_level: warning
             handler: nested
             excluded_404s:
+            max_files: 7
                 # regex: exclude all 404 errors from the logs
                 - ^/
         nested:

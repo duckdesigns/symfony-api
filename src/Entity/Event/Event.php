@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Entity(repositoryClass="App\Repository\EventRepository")
  */
-class Event implements \JsonSerializable
+class Entity implements \JsonSerializable
 {
 
     /**
@@ -24,6 +24,7 @@ class Event implements \JsonSerializable
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
+     * @Assert\NotNull()
      */
     private $title;
 
