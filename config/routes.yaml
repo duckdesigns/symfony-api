@@ -1,30 +1,25 @@
-event_fetchAll:
-    path: /events
-    controller: App\Controller\Event\Get::fetchAll
+event_fetch_all_by_location:
+    path: /locations/{locationId}/events
+    controller: App\Controller\Event\Get::fetchAllByLocation
     methods: [GET]
 
 event_fetch:
-    path: /events/{id}
+    path: /events/{eventId}
     controller: App\Controller\Event\Get::fetch
     methods: [GET]
-    requirements:
-        id: '\d+'
     
 event_create:
-    path: /events
+    path: /locations/{id}/events
     controller: App\Controller\Event\Post::create
     methods: [POST]
-
-event_update:
-    path: /events/{id}
-    controller: App\Controller\Event\Put::update
-    methods: [PUT]
-    requirements:
-        id: '\d+'
-    
-event_delete:
-    path: /events/{id}
-    controller: App\Controller\Event\Delete::delete
-    methods: [DELETE]
-    requirements:
-        id: '\d+'
+       
+location_fetch:
+    path: /locations/{locationId}
+    controller: App\Controller\Location\Get::fetch
+    methods: [GET]
+         
+location_create:
+    path: /locations
+    controller: App\Controller\Location\Post::create
+    methods: [POST]
+        

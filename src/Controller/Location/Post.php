@@ -1,12 +1,12 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Controller\Event;
+namespace App\Controller\Location;
 
 use App\Controller\BaseController;
-use App\Entity;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form;
+use App\Entity;
 use App\Dto;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,20 +15,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class Post extends BaseController
 {
 
-    public function create(Request $request, string $id): JsonResponse
+    public function create(Request $request): JsonResponse
     {
         try
         {
-            $location = $this->entityManager->find(Entity\Location::class, $id);
-            
-            if ($location === null)
-            {
-                return new JsonResponse(['errors' => ['The specified location does not exist']],
-                                        JsonResponse::HTTP_BAD_REQUEST);
-            }
-            
             $postData = json_decode($request->getContent(), true);
-            $form = $this->createForm(Form\Event::class, new Dto\Event());
+            $form = $this->createForm(Form\Location::class, new Dto\Location());
             $form->submit($postData);
             
             if ($form->isValid() === false)
@@ -41,14 +33,11 @@ class Post extends BaseController
                 return new JsonResponse(['errors' => $errors], JsonResponse::HTTP_BAD_REQUEST);
             }
             
-            $event = Entity\Event::createFromDto($form->getData());
-            $event->setLocation($location);
-            $this->entityManager->persist($event);
+            $entity = Entity\Location::createFromDto($form->getData());
+            $this->entityManager->persist($entity);
             $this->entityManager->flush();
             
-            return new JsonResponse(null,
-                                    JsonResponse::HTTP_CREATED,
-                                    ['Location' => '/events/' . $event->getId()]);
+            return new JsonResponse(null, JsonResponse::HTTP_CREATED, ['Location' => '/locations/' . $entity->getId()]);
         }
         catch (\Throwable $t)
         {
