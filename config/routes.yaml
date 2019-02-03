@@ -2,6 +2,11 @@ event_fetch_all_by_location:
     path: /locations/{locationId}/events
     controller: App\Controller\Event\Get::fetchAllByLocation
     methods: [GET]
+    
+event_fetch_all:
+    path: /events
+    controller: App\Controller\Event\Get::fetchAll
+    methods: [GET]
 
 event_fetch:
     path: /events/{eventId}

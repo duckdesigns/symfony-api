@@ -5,9 +5,11 @@ namespace App\Tests\Functional;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\Client;
+use App\Tests\Util;
 
 class LocationApiTest extends WebTestCase
 {
+    use Util\Database;
 
     /** @var Client */
     private $client;
@@ -15,6 +17,11 @@ class LocationApiTest extends WebTestCase
     public function setup()
     {
         $this->client = self::createClient();
+    }
+
+    public function tearDown()
+    {
+        $this->truncateDatabaseTables();
     }
 
     public function testCreate()

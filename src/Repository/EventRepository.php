@@ -8,6 +8,10 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use App\Entity\Location;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class EventRepository extends ServiceEntityRepository
 {
@@ -24,17 +28,24 @@ class EventRepository extends ServiceEntityRepository
 
     public function findByDistanceFromGeolocation(float $latitude, float $longitude, int $maxDistance): Collection
     {
-        $sql = 'SELECT id, (6371*acos(cos(radians(:originLatitude))*cos(radians(latitude))*cos(radians(longitude)-radians(:originLongitude))+sin(radians(:originLatitude))* sin( radians(latitude))))
+        $sql = 'SELECT id, (6371*acos(cos(radians(:originLatitude))*cos(radians(latitude))*cos(radians(longitude)-radians(:originLongitude))+sin(radians(:originLatitude))*sin( radians(latitude))))
                 AS distance
                 FROM location
-                HAVING distance < :maxDistance
+                HAVING distance <= :maxDistance
                 ORDER BY distance;';
         $statement = $this->entityManager->getConnection()->prepare($sql);
         $statement->bindValue('originLatitude', $latitude);
         $statement->bindValue('originLongitude', $longitude);
         $statement->bindValue('maxDistance', $maxDistance);
         $statement->execute();
+        $rows = $statement->fetchAll();
         
-        return $statement->fetchAll();
+        $events = new ArrayCollection();
+        foreach ($this->findBy(['location' => array_column($rows, 'id')]) as $event)
+        {
+            $events->add($event);
+        }
+        
+        return $events;
     }
 }

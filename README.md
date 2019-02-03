@@ -21,3 +21,12 @@ GET /events/{id}
 
 geolocation https://en.wikipedia.org/wiki/Decimal_degrees -> 5 decimals
 
+
+add db credentials to .env .env.test
+
+create databse -> doctrine:database:create
+doctrine:schema:create
+
+create test database -> doctrine:database:create --env test
+doctrine:schema:create --env test
+

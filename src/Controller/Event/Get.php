@@ -5,6 +5,7 @@ namespace App\Controller\Event;
 
 use App\Controller\BaseController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\EventRepository;
@@ -26,6 +27,31 @@ class Get extends BaseController
             }
             
             return new JsonResponse($repository->findBy(['location' => $locationId]));
+        }
+        catch (\Throwable $t)
+        {
+            $this->logger->error($t->getMessage());
+            
+            return new JsonResponse(['errors' => ['The server encountered an error, please try again later']],
+                                    JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function fetchAll(EventRepository $repository, Request $request): JsonResponse
+    {
+        try
+        {
+            $getParams = $request->query->all();
+            if (isset($getParams['max-distance-from']))
+            {
+                $maxDistanceFromParams = explode(',', $getParams['max-distance-from']);
+                $events = $repository->findByDistanceFromGeolocation((float) $maxDistanceFromParams[0],
+                                                                    (float) $maxDistanceFromParams[1],
+                                                                    (int) $maxDistanceFromParams[2]);
+                return new JsonResponse($events->toArray());
+            }
+            
+            return new JsonResponse($repository->findAll());
         }
         catch (\Throwable $t)
         {
