@@ -18,6 +18,7 @@ class EventApiTest extends WebTestCase
     }
 
     /**
+     *
      * @depends App\Tests\Functional\LocationApiTest::testCreate
      */
     public function testFetchAllByLocation()
@@ -34,6 +35,24 @@ class EventApiTest extends WebTestCase
         
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
         $fetchedEvent = json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertSame($eventInput['title'], $fetchedEvent['title']);
+    }
+
+    public function testCreate()
+    {
+        $locationInput = ['title' => 'Berghain', 'latitude' => '41.40338', 'longitude' => '2.17403'];
+        $this->client->request('POST', '/locations', [], [], [], json_encode($locationInput));
+        $locationLocation = $this->client->getResponse()->headers->get('Location');
+        
+        $eventInput = ['title' => 'Kit Kat Club'];
+        $this->client->request('POST', $locationLocation . '/events', [], [], [], json_encode($eventInput));
+        
+        $this->assertSame(201, $this->client->getResponse()->getStatusCode());
+        $eventLocation = $this->client->getResponse()->headers->get('Location');
+        
+        $this->client->request('GET', $eventLocation);
+        $fetchedEvent = json_decode($this->client->getResponse()->getContent(), true);
+        
         $this->assertSame($eventInput['title'], $fetchedEvent['title']);
     }
 }

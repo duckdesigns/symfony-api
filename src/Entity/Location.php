@@ -34,13 +34,13 @@ class Location implements \JsonSerializable
 
     /**
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="decimal", precision=8, scale=5)
      */
     private $latitude;
 
     /**
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="decimal", precision=8, scale=5)
      */
     private $longitude;
 

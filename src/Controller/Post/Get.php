@@ -1,31 +1,32 @@
 <?php
 declare(strict_types = 1);
 
-namespace App\Controller\Event;
+namespace App\Controller\Post;
 
 use App\Controller\BaseController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Repository\PostRepository;
 use App\Repository\EventRepository;
 use App\Entity;
 
 class Get extends BaseController
 {
 
-    public function fetchAllByLocation(EventRepository $repository, string $locationId): JsonResponse
+    public function fetchAllByEvent(EventRepository $repository, string $eventId): JsonResponse
     {
         try
         {
-            $location = $this->entityManager->find(Entity\Location::class, $locationId);
+            $event = $this->entityManager->find(Entity\Event::class, $eventId);
             
-            if ($location === null)
+            if ($event === null)
             {
-                return new JsonResponse(['errors' => ['The specified location does not exist']],
+                return new JsonResponse(['errors' => ['The specified event does not exist']],
                                         JsonResponse::HTTP_BAD_REQUEST);
             }
             
-            return new JsonResponse($repository->findBy(['location' => $locationId]));
+            return new JsonResponse($repository->findBy(['event' => $eventId]));
         }
         catch (\Throwable $t)
         {
@@ -36,17 +37,17 @@ class Get extends BaseController
         }
     }
 
-    public function fetch(EventRepository $repository, string $eventId): JsonResponse
+    public function fetch(PostRepository $repository, string $postId): JsonResponse
     {
         try
         {
-            $event = $repository->find($eventId);
-            if ($event !== null)
+            $post = $repository->find($postId);
+            if ($post !== null)
             {
-                return new JsonResponse($event);
+                return new JsonResponse($post);
             }
             
-            return new JsonResponse(['errors' => ['The specified event could not be found']],
+            return new JsonResponse(['errors' => ['The specified post could not be found']],
                                     JsonResponse::HTTP_NOT_FOUND);
         }
         catch (\Throwable $t)

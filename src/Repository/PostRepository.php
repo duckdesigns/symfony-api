@@ -3,12 +3,12 @@ declare(strict_types = 1);
 
 namespace App\Repository;
 
-use App\Entity\Location;
+use App\Entity\Post;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class LocationRepository extends ServiceEntityRepository
+class PostRepository extends ServiceEntityRepository
 {
 
     /** @var ObjectManager */
@@ -18,6 +18,6 @@ class LocationRepository extends ServiceEntityRepository
     {
         $this->entityManager = $entityManager;
         
-        parent::__construct($registry, Location::class);
+        parent::__construct($registry, Post::class);
     }
 }

@@ -7,6 +7,8 @@ use Ramsey\Uuid\UuidInterface;
 use Doctrine\ORM\Mapping as ORM;
 use App\Dto;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  *
@@ -35,6 +37,17 @@ class Event implements \JsonSerializable
      * @ORM\ManyToOne(targetEntity="App\Entity\Location", inversedBy="events")
      */
     private $location;
+
+    /**
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Post", mappedBy="event")
+     */
+    private $posts;
+
+    public function __construct()
+    {
+        $this->posts = new ArrayCollection();
+    }
 
     public static function createFromDto(Dto\Event $dto): self
     {
@@ -67,6 +80,11 @@ class Event implements \JsonSerializable
     public function setLocation(Location $location): void
     {
         $this->location = $location;
+    }
+
+    public function getPosts(): Collection
+    {
+        return $this->posts;
     }
 
     public function jsonSerialize(): array

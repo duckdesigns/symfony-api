@@ -19,3 +19,5 @@ GET /locations/{id}/events?radius=10km
 
 GET /events/{id}
 
+geolocation https://en.wikipedia.org/wiki/Decimal_degrees -> 5 decimals
+

@@ -9,16 +9,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Form;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
-class Event extends AbstractType
+class Post extends AbstractType
 {
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('title');
+        $builder->add('content');
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(['data_class' => Dto\Event::class]);
+        $resolver->setDefaults(['data_class' => Dto\Post::class]);
     }
 }

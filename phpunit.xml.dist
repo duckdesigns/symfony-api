@@ -20,6 +20,7 @@
         <testsuite name="Functional tests">
             <file>./tests/Functional/LocationApiTest.php</file>
             <file>./tests/Functional/EventApiTest.php</file>
+            <file>./tests/Functional/PostApiTest.php</file>
         </testsuite>
     </testsuites>
 

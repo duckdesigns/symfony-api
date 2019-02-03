@@ -22,4 +22,19 @@ location_create:
     path: /locations
     controller: App\Controller\Location\Post::create
     methods: [POST]
+    
+post_fetch_all_by_event:
+    path: /events/{eventId}/posts
+    controller: App\Controller\Post\Get::fetchAllByEvent
+    methods: [GET]
+    
+post_fetch:
+    path: /events/{eventId}/posts/{postId}
+    controller: App\Controller\Post\Get::fetch
+    methods: [GET]
+    
+post_create:
+    path: /events/{eventId}/posts
+    controller: App\Controller\Post\Post::create
+    methods: [POST]
         
