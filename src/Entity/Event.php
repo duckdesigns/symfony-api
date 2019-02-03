@@ -9,10 +9,13 @@ use App\Dto;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  *
  * @ORM\Entity(repositoryClass="App\Repository\EventRepository")
+ * @Hateoas\Relation("self", href = "expr('/api/users/' ~ object.getId())")
+ * 
  */
 class Event implements \JsonSerializable
 {
@@ -23,6 +26,7 @@ class Event implements \JsonSerializable
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
+     *
      */
     private $id;
 

@@ -14,10 +14,15 @@ use App\Entity;
 class Get extends BaseController
 {
 
-    public function fetchAllByEvent(EventRepository $repository, string $eventId): JsonResponse
+    public function fetchAllByEvent(EventRepository $repository, string $eventId): Response
     {
         try
         {
+            if ($this->clientAcceptsJson($request->getAcceptableContentTypes()) === false)
+            {
+                return createNotAcceptableResponse();
+            }
+            
             $event = $this->entityManager->find(Entity\Event::class, $eventId);
             
             if ($event === null)
@@ -37,10 +42,15 @@ class Get extends BaseController
         }
     }
 
-    public function fetch(PostRepository $repository, string $postId): JsonResponse
+    public function fetch(PostRepository $repository, string $postId): Response
     {
         try
         {
+            if ($this->clientAcceptsJson($request->getAcceptableContentTypes()) === false)
+            {
+                return createNotAcceptableResponse();
+            }
+            
             $post = $repository->find($postId);
             if ($post !== null)
             {

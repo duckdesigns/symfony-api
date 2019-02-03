@@ -14,10 +14,15 @@ use App\Entity;
 class Get extends BaseController
 {
 
-    public function fetchAllByLocation(EventRepository $repository, string $locationId): JsonResponse
+    public function fetchAllByLocation(EventRepository $repository, string $locationId, Request $request): Response
     {
         try
         {
+            if ($this->clientAcceptsJson($request->getAcceptableContentTypes()) === false)
+            {
+                return createNotAcceptableResponse();
+            }
+            
             $location = $this->entityManager->find(Entity\Location::class, $locationId);
             
             if ($location === null)
@@ -37,10 +42,15 @@ class Get extends BaseController
         }
     }
 
-    public function fetchAll(EventRepository $repository, Request $request): JsonResponse
+    public function fetchAll(EventRepository $repository, Request $request): Response
     {
         try
         {
+            if ($this->clientAcceptsJson($request->getAcceptableContentTypes()) === false)
+            {
+                return createNotAcceptableResponse();
+            }
+            
             $getParams = $request->query->all();
             if (isset($getParams['max-distance-from']))
             {
@@ -62,10 +72,15 @@ class Get extends BaseController
         }
     }
 
-    public function fetch(EventRepository $repository, string $eventId): JsonResponse
+    public function fetch(EventRepository $repository, string $eventId): Response
     {
         try
         {
+            if ($this->clientAcceptsJson($request->getAcceptableContentTypes()) === false)
+            {
+                return createNotAcceptableResponse();
+            }
+            
             $event = $repository->find($eventId);
             if ($event !== null)
             {

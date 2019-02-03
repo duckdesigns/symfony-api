@@ -68,6 +68,24 @@
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
+    "jms/metadata": {
+        "version": "1.7.0"
+    },
+    "jms/parser-lib": {
+        "version": "1.0.0"
+    },
+    "jms/serializer": {
+        "version": "1.13.0"
+    },
+    "jms/serializer-bundle": {
+        "version": "2.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "2.0",
+            "ref": "fe60ce509ef04a3f40da96e3979bc8d9b13b2372"
+        }
+    },
     "monolog/monolog": {
         "version": "1.24.0"
     },
@@ -79,6 +97,12 @@
     },
     "ocramius/proxy-manager": {
         "version": "2.1.1"
+    },
+    "phpcollection/phpcollection": {
+        "version": "0.5.0"
+    },
+    "phpoption/phpoption": {
+        "version": "1.5.0"
     },
     "psr/cache": {
         "version": "1.0.1"
@@ -142,6 +166,9 @@
     },
     "symfony/event-dispatcher": {
         "version": "v4.2.2"
+    },
+    "symfony/expression-language": {
+        "version": "v4.2.3"
     },
     "symfony/filesystem": {
         "version": "v4.2.2"
@@ -253,6 +280,12 @@
     },
     "symfony/yaml": {
         "version": "v4.2.2"
+    },
+    "willdurand/hateoas": {
+        "version": "2.12.0"
+    },
+    "willdurand/hateoas-bundle": {
+        "version": "1.4.0"
     },
     "zendframework/zend-code": {
         "version": "3.3.1"

@@ -5,10 +5,13 @@ namespace App\Controller;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class BaseController extends AbstractController
 {
+
     /** @var ObjectManager */
     protected $entityManager;
 
@@ -19,5 +22,26 @@ class BaseController extends AbstractController
     {
         $this->entityManager = $entityManager;
         $this->logger = $logger;
+    }
+
+    protected function clientAcceptsJson(array $acceptedTypes): bool
+    {
+        if (count($acceptedTypes) === 0)
+        {
+            return true;
+        }
+        
+        if (in_array('*/*', $acceptedTypes) || in_array('application/json', $acceptedTypes))
+        {
+            return true;
+        }
+        
+        return false;
+    }
+
+    protected function createNotAcceptableresponse(): Response
+    {
+        return new Response('You need to accept the "application/json" format in order to use this API',
+                            Response::HTTP_NOT_ACCEPTABLE);
     }
 }

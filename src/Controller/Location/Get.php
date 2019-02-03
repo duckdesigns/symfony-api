@@ -13,10 +13,15 @@ use App\Entity;
 class Get extends BaseController
 {
 
-    public function fetch(LocationRepository $repository, string $locationId): JsonResponse
+    public function fetch(LocationRepository $repository, string $locationId): Response
     {
         try
         {
+            if ($this->clientAcceptsJson($request->getAcceptableContentTypes()) === false)
+            {
+                return createNotAcceptableResponse();
+            }
+            
             $location = $repository->find($locationId);
             if ($location !== null)
             {
