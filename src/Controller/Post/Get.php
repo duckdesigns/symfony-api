@@ -9,13 +9,12 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Library\Http\JsonResponse;
 use App\Library\Http\ResponseInterface;
 use App\Repository\PostRepository;
-use App\Repository\EventRepository;
 use App\Entity;
 
 class Get extends BaseController
 {
 
-    public function fetchAllByEvent(EventRepository $repository, string $eventId, Request $request): ResponseInterface
+    public function fetchAllByEvent(PostRepository $repository, string $eventId, Request $request): ResponseInterface
     {
         try
         {
