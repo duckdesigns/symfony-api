@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class BaseController extends AbstractController
 {
@@ -37,11 +38,5 @@ class BaseController extends AbstractController
         }
         
         return false;
-    }
-
-    protected function createNotAcceptableresponse(): Response
-    {
-        return new Response('You need to accept the "application/json" format in order to use this API',
-                            Response::HTTP_NOT_ACCEPTABLE);
     }
 }

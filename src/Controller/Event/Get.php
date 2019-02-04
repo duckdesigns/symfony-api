@@ -4,51 +4,49 @@ declare(strict_types = 1);
 namespace App\Controller\Event;
 
 use App\Controller\BaseController;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Library\Http\Response;
+use App\Library\Http\ResponseInterface;
 use App\Repository\EventRepository;
 use App\Entity;
+use App\Library\Http\JsonResponse;
 
 class Get extends BaseController
 {
 
-    public function fetchAllByLocation(EventRepository $repository, string $locationId, Request $request): Response
+    public function fetchAllByLocation(EventRepository $repository, string $locationId, Request $request): ResponseInterface
     {
         try
         {
             if ($this->clientAcceptsJson($request->getAcceptableContentTypes()) === false)
             {
-                return createNotAcceptableResponse();
+                return Response::createHttpNotAcceptable();
             }
             
             $location = $this->entityManager->find(Entity\Location::class, $locationId);
             
             if ($location === null)
             {
-                return new JsonResponse(['errors' => ['The specified location does not exist']],
-                                        JsonResponse::HTTP_BAD_REQUEST);
+                return JsonResponse::createHttpBadRequest(['The specified location does not exist']);
             }
             
-            return new JsonResponse($repository->findBy(['location' => $locationId]));
+            return JsonResponse::createHal($repository->findBy(['location' => $locationId]));
         }
         catch (\Throwable $t)
         {
             $this->logger->error($t->getMessage());
             
-            return new JsonResponse(['errors' => ['The server encountered an error, please try again later']],
-                                    JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+            return JsonResponse::createHttpInternalServerError();
         }
     }
 
-    public function fetchAll(EventRepository $repository, Request $request): Response
+    public function fetchAll(EventRepository $repository, Request $request): ResponseInterface
     {
         try
         {
             if ($this->clientAcceptsJson($request->getAcceptableContentTypes()) === false)
             {
-                return createNotAcceptableResponse();
+                return Response::createHttpNotAcceptable();
             }
             
             $getParams = $request->query->all();
@@ -58,44 +56,41 @@ class Get extends BaseController
                 $events = $repository->findByDistanceFromGeolocation((float) $maxDistanceFromParams[0],
                                                                     (float) $maxDistanceFromParams[1],
                                                                     (int) $maxDistanceFromParams[2]);
-                return new JsonResponse($events->toArray());
+                return JsonResponse::createHal($events->toArray());
             }
             
-            return new JsonResponse($repository->findAll());
+            return JsonResponse::createHal($repository->findAll());
         }
         catch (\Throwable $t)
         {
             $this->logger->error($t->getMessage());
             
-            return new JsonResponse(['errors' => ['The server encountered an error, please try again later']],
-                                    JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+            return JsonResponse::createHttpInternalServerError();
         }
     }
 
-    public function fetch(EventRepository $repository, string $eventId): Response
+    public function fetch(EventRepository $repository, string $eventId, Request $request): ResponseInterface
     {
         try
         {
             if ($this->clientAcceptsJson($request->getAcceptableContentTypes()) === false)
             {
-                return createNotAcceptableResponse();
+                return Response::createHttpNotAcceptable();
             }
             
             $event = $repository->find($eventId);
             if ($event !== null)
             {
-                return new JsonResponse($event);
+                return JsonResponse::createHal($event);
             }
             
-            return new JsonResponse(['errors' => ['The specified event could not be found']],
-                                    JsonResponse::HTTP_NOT_FOUND);
+            return JsonResponse::createHttpNotFound(['The specified event could not be found']);
         }
         catch (\Throwable $t)
         {
             $this->logger->error($t->getMessage());
             
-            return new JsonResponse(['errors' => ['The server encountered an error, please try again later']],
-                                    JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+            return JsonResponse::createHttpInternalServerError();
         }
     }
 }

@@ -4,38 +4,37 @@ declare(strict_types = 1);
 namespace App\Controller\Location;
 
 use App\Controller\BaseController;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Library\Http\JsonResponse;
+use App\Library\Http\ResponseInterface;
 use App\Repository\LocationRepository;
-use App\Entity;
+use Symfony\Component\HttpFoundation\Request;
 
 class Get extends BaseController
 {
 
-    public function fetch(LocationRepository $repository, string $locationId): Response
+    public function fetch(LocationRepository $repository, string $locationId, Request $request): ResponseInterface
     {
         try
         {
             if ($this->clientAcceptsJson($request->getAcceptableContentTypes()) === false)
             {
-                return createNotAcceptableResponse();
+                return Response::createHttpNotAcceptable();
             }
             
             $location = $repository->find($locationId);
             if ($location !== null)
             {
-                return new JsonResponse($location);
+                return JsonResponse::createHal($location);
             }
             
-            return new JsonResponse(['errors' => ['The specified location could not be found']],
-                                    JsonResponse::HTTP_NOT_FOUND);
+            return JsonResponse::createHttpNotFound('The specified location could not be found');
         }
         catch (\Throwable $t)
         {
             $this->logger->error($t->getMessage());
-            return new JsonResponse(['errors' => ['The server encountered an error, please try again later']],
-                                    JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+            
+            return JsonResponse::createHttpInternalServerError();
         }
     }
 }

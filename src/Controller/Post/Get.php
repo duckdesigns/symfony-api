@@ -4,9 +4,10 @@ declare(strict_types = 1);
 namespace App\Controller\Post;
 
 use App\Controller\BaseController;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Library\Http\JsonResponse;
+use App\Library\Http\ResponseInterface;
 use App\Repository\PostRepository;
 use App\Repository\EventRepository;
 use App\Entity;
@@ -14,58 +15,54 @@ use App\Entity;
 class Get extends BaseController
 {
 
-    public function fetchAllByEvent(EventRepository $repository, string $eventId): Response
+    public function fetchAllByEvent(EventRepository $repository, string $eventId, Request $request): ResponseInterface
     {
         try
         {
             if ($this->clientAcceptsJson($request->getAcceptableContentTypes()) === false)
             {
-                return createNotAcceptableResponse();
+                return Response::createHttpNotAcceptable();
             }
             
             $event = $this->entityManager->find(Entity\Event::class, $eventId);
             
             if ($event === null)
             {
-                return new JsonResponse(['errors' => ['The specified event does not exist']],
-                                        JsonResponse::HTTP_BAD_REQUEST);
+                return JsonResponse::createHttpBadRequest(['The specified event does not exist']);
             }
             
-            return new JsonResponse($repository->findBy(['event' => $eventId]));
+            return JsonResponse::createHal($repository->findBy(['event' => $eventId]));
         }
         catch (\Throwable $t)
         {
             $this->logger->error($t->getMessage());
             
-            return new JsonResponse(['errors' => ['The server encountered an error, please try again later']],
-                                    JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+            return JsonResponse::createHttpInternalServerError();
         }
     }
 
-    public function fetch(PostRepository $repository, string $postId): Response
+    public function fetch(PostRepository $repository, string $postId, Request $request): ResponseInterface
     {
         try
         {
             if ($this->clientAcceptsJson($request->getAcceptableContentTypes()) === false)
             {
-                return createNotAcceptableResponse();
+                return Response::createHttpNotAcceptable();
             }
             
             $post = $repository->find($postId);
             if ($post !== null)
             {
-                return new JsonResponse($post);
+                return JsonResponse::createHal($post);
             }
             
-            return new JsonResponse(['errors' => ['The specified post could not be found']],
-                                    JsonResponse::HTTP_NOT_FOUND);
+            return JsonResponse::createHttpNotFound('The specified post could not be found');
         }
         catch (\Throwable $t)
         {
             $this->logger->error($t->getMessage());
             
-            return new JsonResponse(['errors' => ['The server encountered an error, please try again later']],
-                                    JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+            return JsonResponse::createHttpInternalServerError();
         }
     }
 }

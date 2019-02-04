@@ -5,26 +5,30 @@ namespace App\Controller\Event;
 
 use App\Controller\BaseController;
 use App\Entity;
-use Symfony\Component\Routing\Annotation\Route;
 use App\Form;
 use App\Dto;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Library\Http\JsonResponse;
+use App\Library\Http\ResponseInterface;
 
 class Post extends BaseController
 {
 
-    public function create(Request $request, string $id): JsonResponse
+    public function create(Request $request, string $id): ResponseInterface
     {
         try
         {
+            if ($this->clientAcceptsJson($request->getAcceptableContentTypes()) === false)
+            {
+                return Response::createHttpNotAcceptable();
+            }
+            
             $location = $this->entityManager->find(Entity\Location::class, $id);
             
             if ($location === null)
             {
-                return new JsonResponse(['errors' => ['The specified location does not exist']],
-                                        JsonResponse::HTTP_BAD_REQUEST);
+                return JsonResponse::createHttpBadRequest(['The specified location does not exist']);
             }
             
             $postData = json_decode($request->getContent(), true);
@@ -38,7 +42,8 @@ class Post extends BaseController
                 {
                     $errors[] = $error->getMessage();
                 }
-                return new JsonResponse(['errors' => $errors], JsonResponse::HTTP_BAD_REQUEST);
+                
+                return JsonResponse::createHttpBadRequest($errors);
             }
             
             $event = Entity\Event::createFromDto($form->getData());
@@ -46,16 +51,13 @@ class Post extends BaseController
             $this->entityManager->persist($event);
             $this->entityManager->flush();
             
-            return new JsonResponse(null,
-                                    JsonResponse::HTTP_CREATED,
-                                    ['Location' => '/events/' . $event->getId()]);
+            return JsonResponse::createHttpCreated('/events/' . $event->getId());
         }
         catch (\Throwable $t)
         {
             $this->logger->error($t->getMessage());
             
-            return new JsonResponse(['error' => 'The server encountered an error, please try again later'],
-                                    JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+            return JsonResponse::createHttpInternalServerError();
         }
     }
 }
