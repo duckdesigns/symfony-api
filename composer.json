@@ -51,23 +51,8 @@
 		}
 	},
 	"require-dev": {
-		"harmbandstra/swagger-ui-bundle": "^4.0",
 		"symfony/browser-kit": "4.2.*",
 		"symfony/maker-bundle": "^1.11",
 		"symfony/phpunit-bridge": "4.2.*"
-	},
-	"scripts": {
-		"auto-scripts": {
-			"cache:clear": "symfony-cmd",
-			"assets:install %PUBLIC_DIR%": "symfony-cmd"
-		},
-		"post-install-cmd": [
-			"HarmBandstra\\SwaggerUiBundle\\Composer\\ScriptHandler::linkAssets",
-			"@auto-scripts"
-		],
-		"post-update-cmd": [
-			"HarmBandstra\\SwaggerUiBundle\\Composer\\ScriptHandler::linkAssets",
-			"@auto-scripts"
-		]
 	}
 }

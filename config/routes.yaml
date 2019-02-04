@@ -42,8 +42,4 @@ post_create:
     path: /events/{eventId}/posts
     controller: App\Controller\Post\Post::create
     methods: [POST]
-    
-_swagger-ui:
-    resource: '@HBSwaggerUiBundle/Resources/config/routing.yml'
-    prefix: /docs
         
