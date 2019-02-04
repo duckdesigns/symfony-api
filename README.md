@@ -12,8 +12,8 @@ The environment needs to feature:
 
 ## Installation
 
-1. The project can be downloaded from github <code>$ git clone </code>
-2. After download, create a database and schema (assuming current directory is the root directory of the project) <code>$ bin/console doctrine:database:create; bin/console doctrine:schema:create</code>
+1. The project can be downloaded from github <code>$ git clone https://github.com/duckdesigns/symfony-api.git</code>
+2. After download, create a database and schema (assuming current directory is the root directory of the project)  <code>$ bin/console doctrine:database:create; bin/console doctrine:schema:create</code>
 3. Point your webserver to the <code>/public</code> directory or start a simple php web server like <code>$php -S localhost:8000</code>
 4. Now you can use any rest client to create and retrieve data from the endpoints mentioned in the documentation.
 
